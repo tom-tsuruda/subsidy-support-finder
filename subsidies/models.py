@@ -1,8 +1,5 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
 
 class SubsidyProgram(models.Model):
     STATUS_CHOICES = [
@@ -32,6 +29,12 @@ class SubsidyProgram(models.Model):
     )
 
     official_url = models.URLField("公式URL", blank=True)
+    
+    source_name = models.CharField("取得元名", max_length=255, blank=True)
+    source_url = models.URLField("取得元URL", blank=True)
+    fetched_at = models.DateTimeField("取得日時", null=True, blank=True)
+    raw_text = models.TextField("取得時の元テキスト", blank=True)
+    
     summary = models.TextField("概要", blank=True)
     consultant_comment = models.TextField("診断士コメント", blank=True)
 

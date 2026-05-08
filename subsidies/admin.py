@@ -14,4 +14,12 @@ class SubsidyProgramAdmin(admin.ModelAdmin):
         "is_active",
     )
     list_filter = ("status", "is_active", "area")
-    search_fields = ("title", "provider", "area", "summary", "consultant_comment")
+    search_fields = (
+    "title",
+    "provider",
+    "area",
+    "source_name",
+    "source_url",
+    "summary",
+    "consultant_comment",
+)
