@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import SubsidyProgram
 
 
@@ -86,4 +86,17 @@ def diagnosis_form(request):
         request,
         "subsidies/diagnosis_form.html",
         {"interest_labels": INTEREST_LABELS},
+    )
+
+def program_detail(request, pk):
+    program = get_object_or_404(
+        SubsidyProgram,
+        pk=pk,
+        is_active=True,
+    )
+
+    return render(
+        request,
+        "subsidies/program_detail.html",
+        {"program": program},
     )

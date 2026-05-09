@@ -45,12 +45,19 @@
 
                 <p><strong>目的カテゴリ：</strong>{{ item.program.purpose_categories }}</p>
 
+                <p>
+                    <a href="{% url 'subsidies:program_detail' item.program.id %}">
+                        詳細を見る
+                    </a>
+                </p>
+
                 {% if item.program.official_url %}
                     <p>
                         <a href="{{ item.program.official_url }}" target="_blank" rel="noopener">
                             公式サイト・取得元を確認する
                         </a>
                     </p>
+                    
                 {% endif %}
             </div>
         {% endfor %}

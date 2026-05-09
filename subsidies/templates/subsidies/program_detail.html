@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ program.title }}</title>
+</head>
+<body>
+    <h1>{{ program.title }}</h1>
+
+    <p>
+        このページでは、取得した補助金・支援策情報の概要を確認できます。<br>
+        実際に申請できるかどうかは、必ず公式情報をご確認ください。
+    </p>
+
+    <hr>
+
+    <h2>基本情報</h2>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>制度名</th>
+            <td>{{ program.title }}</td>
+        </tr>
+        <tr>
+            <th>実施機関</th>
+            <td>{{ program.provider|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>対象地域</th>
+            <td>{{ program.area|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>対象者</th>
+            <td>{{ program.target_business|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>補助上限額</th>
+            <td>{{ program.max_amount|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>補助率</th>
+            <td>{{ program.subsidy_rate|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>公募開始日</th>
+            <td>{{ program.application_start|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>締切日</th>
+            <td>{{ program.application_deadline|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>ステータス</th>
+            <td>{{ program.get_status_display }}</td>
+        </tr>
+        <tr>
+            <th>目的カテゴリ</th>
+            <td>{{ program.purpose_categories }}</td>
+        </tr>
+        <tr>
+            <th>取得元</th>
+            <td>{{ program.source_name|default:"未取得" }}</td>
+        </tr>
+        <tr>
+            <th>取得日時</th>
+            <td>{{ program.fetched_at|default:"未取得" }}</td>
+        </tr>
+    </table>
+
+    <h2>概要</h2>
+    <p>{{ program.summary|linebreaksbr|default:"概要は未取得です。" }}</p>
+
+    <h2>診断士コメント</h2>
+    {% if program.consultant_comment %}
+        <p>{{ program.consultant_comment|linebreaksbr }}</p>
+    {% else %}
+        <p>
+            この制度は、条件に合う可能性があります。対象条件、対象経費、公募期間などを確認したうえで、
+            必要に応じて専門家へ相談することをおすすめします。
+        </p>
+    {% endif %}
+
+    <h2>取得時の元テキスト</h2>
+    <div style="border: 1px solid #ccc; padding: 12px; background: #f9f9f9;">
+        {{ program.raw_text|linebreaksbr|default:"元テキストは未取得です。" }}
+    </div>
+
+    <hr>
+
+    {% if program.official_url %}
+        <p>
+            <a href="{{ program.official_url }}" target="_blank" rel="noopener">
+                公式サイト・取得元を確認する
+            </a>
+        </p>
+    {% endif %}
+
+    <p>
+        <a href="/subsidies/diagnosis/">診断ページへ戻る</a>
+        |
+        <a href="/admin/subsidies/subsidyprogram/{{ program.id }}/change/">
+            管理画面で編集する
+        </a>
+    </p>
+</body>
+</html>
