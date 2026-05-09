@@ -11,7 +11,7 @@ from subsidies.models import SubsidyProgram
 CHUSHO_KOBO_URL = "https://www.chusho.meti.go.jp/koukai/hojyokin/kobo.html"
 
 
-def fetch_html_with_retry(url, headers, retries=3, timeout=60, wait_seconds=5):
+def fetch_html_with_retry(url, headers, retries=2, timeout=30, wait_seconds=3):
     """
     外部サイト取得用の共通処理。
     タイムアウトや一時的な接続失敗に備えてリトライする。
@@ -26,7 +26,7 @@ def fetch_html_with_retry(url, headers, retries=3, timeout=60, wait_seconds=5):
             return response.text
         except requests.exceptions.RequestException as e:
             last_error = e
-            print(f"取得失敗 {attempt}/{retries}: {e}")
+            print(f"中小企業庁取得失敗 {attempt}/{retries}: {e}")
             if attempt < retries:
                 time.sleep(wait_seconds)
 
@@ -36,7 +36,7 @@ def fetch_html_with_retry(url, headers, retries=3, timeout=60, wait_seconds=5):
 def fetch_chusho_subsidies():
     """
     中小企業庁の補助金公募情報ページから補助金情報を取得する。
-    現在の SubsidyProgram モデルに合わせた保存処理。
+    SubsidyProgramモデルに保存する。
     """
 
     headers = {
@@ -50,9 +50,9 @@ def fetch_chusho_subsidies():
     html = fetch_html_with_retry(
         CHUSHO_KOBO_URL,
         headers=headers,
-        retries=3,
-        timeout=60,
-        wait_seconds=5,
+        retries=2,
+        timeout=30,
+        wait_seconds=3,
     )
 
     soup = BeautifulSoup(html, "lxml")

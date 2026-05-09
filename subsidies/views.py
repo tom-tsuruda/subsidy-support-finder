@@ -26,6 +26,16 @@ def diagnosis_form(request):
         programs = SubsidyProgram.objects.filter(
             is_active=True,
             status__in=["open", "scheduled", "unknown"],
+        ).exclude(
+            provider__in=["", "未取得"]
+        ).exclude(
+            area__in=["", "未取得"]
+        ).exclude(
+            title__icontains="一覧"
+        ).exclude(
+            title__icontains="検索"
+        ).exclude(
+            title__icontains="まとめ"
         )
 
         matched_programs = []
@@ -34,12 +44,13 @@ def diagnosis_form(request):
             score = 0
 
             # 地域判定
-            if program.area:
+            # 地域判定
+            # 地域判定
+            if area:
                 if program.area == "全国" or area in program.area or program.area in area:
-                    score += 2
-            else:
-                # 地域が未取得の場合も候補には残す
-                score += 1
+                    score += 5
+                else:
+                    continue
 
             # 目的カテゴリ判定
             if interest and interest in program.purpose_categories:
@@ -55,12 +66,27 @@ def diagnosis_form(request):
                         score += 1
 
             # おすすめ度
-            score += program.recommendation_score
+            score += min(program.recommendation_score, 3)
+
+            if score >= 12:
+                match_label = "高"
+                match_stars = "★★★★★"
+            elif score >= 8:
+                match_label = "中"
+                match_stars = "★★★★☆"
+            elif score >= 5:
+                match_label = "やや低"
+                match_stars = "★★★☆☆"
+            else:
+                match_label = "参考"
+                match_stars = "★★☆☆☆"
 
             if score > 0:
                 matched_programs.append({
                     "program": program,
                     "score": score,
+                    "match_label": match_label,
+                    "match_stars": match_stars,
                 })
 
         matched_programs = sorted(
