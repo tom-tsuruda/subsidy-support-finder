@@ -12,11 +12,18 @@ def contact_form(request):
             diagnosis_area=request.POST.get("diagnosis_area", "").strip(),
             diagnosis_industry=request.POST.get("diagnosis_industry", "").strip(),
             diagnosis_interest=request.POST.get("diagnosis_interest", "").strip(),
+            diagnosis_programs=request.POST.get("diagnosis_programs", "").strip(),
         )
 
         return redirect("inquiries:contact_thanks")
 
-    return render(request, "inquiries/contact_form.html")
+    context = {
+        "diagnosis_area": request.GET.get("area", ""),
+        "diagnosis_industry": request.GET.get("industry", ""),
+        "diagnosis_interest": request.GET.get("interest", ""),
+    }
+
+    return render(request, "inquiries/contact_form.html", context)
 
 
 def contact_thanks(request):

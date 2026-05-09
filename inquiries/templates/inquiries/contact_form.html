@@ -32,7 +32,26 @@
             <label>メールアドレス</label><br>
             <input type="email" name="email" placeholder="例：sample@example.com" required>
         </p>
+        <h3>診断内容</h3>
 
+        <p>
+            <label>診断時の所在地</label><br>
+            <input type="text" name="diagnosis_area" value="{{ diagnosis_area }}" readonly>
+        </p>
+
+        <p>
+            <label>診断時の業種</label><br>
+            <input type="text" name="diagnosis_industry" value="{{ diagnosis_industry }}" readonly>
+        </p>
+
+        <p>
+            <label>診断時の検討内容</label><br>
+            <input type="text" name="diagnosis_interest" value="{{ diagnosis_interest }}" readonly>
+        </p>
+        <p>
+            <label>候補となった支援策</label><br>
+            <textarea name="diagnosis_programs" rows="6" readonly>{{ diagnosis_programs }}</textarea>
+        </p>
         <p>
             <label>相談内容</label><br>
             <textarea name="message" rows="8" placeholder="補助金・支援策について相談したい内容を入力してください。"></textarea>

@@ -83,7 +83,9 @@
         自社で使える可能性を詳しく確認したい方は、お気軽にご相談ください。
     </p>
 
-    <a class="button" href="/inquiries/contact/">この内容で相談する</a>
+    <a class="button" href="/inquiries/contact/?area={{ area|urlencode }}&industry={{ industry|urlencode }}&interest={{ interest_label|urlencode }}&programs={% for item in matched_programs %}{{ item.program.title|urlencode }}{% if not forloop.last %}%0A{% endif %}{% endfor %}">
+        この内容で相談する
+    </a>
     <a class="button button-outline" href="/subsidies/diagnosis/">もう一度診断する</a>
 </div>
 {% endblock %}
