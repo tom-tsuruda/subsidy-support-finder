@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}補助金・支援策診断{% endblock %}</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            color: #222;
+            line-height: 1.7;
+        }
+
+        header {
+            background: #1f4e79;
+            color: white;
+            padding: 20px 32px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        header p {
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        nav {
+            background: #173b5c;
+            padding: 10px 32px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 960px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .notice {
+            background: #fff8e1;
+            border-left: 5px solid #f0b429;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            max-width: 520px;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        button,
+        .button {
+            display: inline-block;
+            background: #1f4e79;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: none;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .button-secondary {
+            background: #666;
+        }
+
+        .button-outline {
+            background: white;
+            color: #1f4e79;
+            border: 1px solid #1f4e79;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        th {
+            width: 180px;
+            background: #f0f3f6;
+            text-align: left;
+        }
+
+        footer {
+            margin-top: 48px;
+            padding: 24px 32px;
+            background: #e9eef3;
+            color: #555;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .score {
+            font-weight: bold;
+            color: #1f4e79;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>補助金・支援策診断</h1>
+        <p>中小企業・小規模事業者向けの支援策候補を確認できます</p>
+    </header>
+
+    <nav>
+        <a href="/subsidies/diagnosis/">診断する</a>
+        <a href="/admin/">管理画面</a>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        補助金・支援策の情報は変更される場合があります。必ず公式情報をご確認ください。
+    </footer>
+</body>
+</html>

@@ -1,15 +1,19 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>補助金・支援策診断</title>
-</head>
-<body>
-    <h1>補助金・支援策診断</h1>
+{% extends "subsidies/base.html" %}
+
+{% block title %}補助金・支援策診断{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>補助金・支援策診断</h2>
 
     <p>
         いくつかの質問に答えるだけで、自社に合いそうな補助金や支援策の候補を確認できます。
     </p>
+
+    <div class="notice">
+        この診断は、利用可能性のある支援策候補を表示するものです。<br>
+        実際に申請できるかどうかは、制度ごとの詳細確認が必要です。
+    </div>
 
     <form method="post">
         {% csrf_token %}
@@ -54,5 +58,5 @@
 
         <button type="submit">診断する</button>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

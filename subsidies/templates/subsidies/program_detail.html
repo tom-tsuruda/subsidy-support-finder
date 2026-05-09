@@ -1,22 +1,29 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ program.title }}</title>
-</head>
-<body>
-    <h1>{{ program.title }}</h1>
+{% extends "subsidies/base.html" %}
 
-    <p>
+{% block title %}{{ program.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ program.title }}</h2>
+
+    <div class="notice">
         このページでは、取得した補助金・支援策情報の概要を確認できます。<br>
         実際に申請できるかどうかは、必ず公式情報をご確認ください。
-    </p>
+    </div>
 
-    <hr>
+    {% if program.official_url %}
+        <p>
+            <a class="button" href="{{ program.official_url }}" target="_blank" rel="noopener">
+                公式サイト・取得元を確認する
+            </a>
+        </p>
+    {% endif %}
+</div>
 
-    <h2>基本情報</h2>
+<div class="card">
+    <h3>基本情報</h3>
 
-    <table border="1" cellpadding="8">
+    <table>
         <tr>
             <th>制度名</th>
             <td>{{ program.title }}</td>
@@ -66,11 +73,15 @@
             <td>{{ program.fetched_at|default:"未取得" }}</td>
         </tr>
     </table>
+</div>
 
-    <h2>概要</h2>
+<div class="card">
+    <h3>概要</h3>
     <p>{{ program.summary|linebreaksbr|default:"概要は未取得です。" }}</p>
+</div>
 
-    <h2>診断士コメント</h2>
+<div class="card">
+    <h3>診断士コメント</h3>
     {% if program.consultant_comment %}
         <p>{{ program.consultant_comment|linebreaksbr }}</p>
     {% else %}
@@ -79,28 +90,17 @@
             必要に応じて専門家へ相談することをおすすめします。
         </p>
     {% endif %}
+</div>
 
-    <h2>取得時の元テキスト</h2>
-    <div style="border: 1px solid #ccc; padding: 12px; background: #f9f9f9;">
-        {{ program.raw_text|linebreaksbr|default:"元テキストは未取得です。" }}
-    </div>
+<div class="card">
+    <h3>取得時の元テキスト</h3>
+    <p>{{ program.raw_text|linebreaksbr|default:"元テキストは未取得です。" }}</p>
+</div>
 
-    <hr>
-
-    {% if program.official_url %}
-        <p>
-            <a href="{{ program.official_url }}" target="_blank" rel="noopener">
-                公式サイト・取得元を確認する
-            </a>
-        </p>
-    {% endif %}
-
-    <p>
-        <a href="/subsidies/diagnosis/">診断ページへ戻る</a>
-        |
-        <a href="/admin/subsidies/subsidyprogram/{{ program.id }}/change/">
-            管理画面で編集する
-        </a>
-    </p>
-</body>
-</html>
+<div class="card">
+    <a class="button" href="/subsidies/diagnosis/">診断ページへ戻る</a>
+    <a class="button button-secondary" href="/admin/subsidies/subsidyprogram/{{ program.id }}/change/">
+        管理画面で編集する
+    </a>
+</div>
+{% endblock %}
