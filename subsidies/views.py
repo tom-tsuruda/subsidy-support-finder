@@ -1,3 +1,89 @@
 from django.shortcuts import render
+from .models import SubsidyProgram
 
-# Create your views here.
+
+INTEREST_LABELS = {
+    "it": "ITツールを導入したい",
+    "equipment": "設備投資をしたい",
+    "sales": "販路開拓をしたい",
+    "energy": "省エネに取り組みたい",
+    "startup": "創業したい",
+    "business_successor": "事業承継を考えている",
+    "wage": "賃上げ・人材確保をしたい",
+    "finance": "資金繰りを改善したい",
+}
+
+
+def diagnosis_form(request):
+    if request.method == "POST":
+        area = request.POST.get("area", "").strip()
+        industry = request.POST.get("industry", "").strip()
+        employee_count = request.POST.get("employee_count", "").strip()
+        business_type = request.POST.get("business_type", "").strip()
+        interest = request.POST.get("interest", "").strip()
+        investment_amount = request.POST.get("investment_amount", "").strip()
+
+        programs = SubsidyProgram.objects.filter(
+            is_active=True,
+            status__in=["open", "scheduled", "unknown"],
+        )
+
+        matched_programs = []
+
+        for program in programs:
+            score = 0
+
+            # 地域判定
+            if program.area:
+                if program.area == "全国" or area in program.area or program.area in area:
+                    score += 2
+            else:
+                # 地域が未取得の場合も候補には残す
+                score += 1
+
+            # 目的カテゴリ判定
+            if interest and interest in program.purpose_categories:
+                score += 10
+
+            # タイトル・概要にも選択内容に近い文字があれば軽く加点
+            interest_label = INTEREST_LABELS.get(interest, "")
+            text_for_search = f"{program.title} {program.summary} {program.raw_text}"
+
+            if interest_label:
+                for word in interest_label.replace("・", " ").split():
+                    if word and word in text_for_search:
+                        score += 1
+
+            # おすすめ度
+            score += program.recommendation_score
+
+            if score > 0:
+                matched_programs.append({
+                    "program": program,
+                    "score": score,
+                })
+
+        matched_programs = sorted(
+            matched_programs,
+            key=lambda x: x["score"],
+            reverse=True,
+        )
+
+        context = {
+            "area": area,
+            "industry": industry,
+            "employee_count": employee_count,
+            "business_type": business_type,
+            "interest": interest,
+            "interest_label": INTEREST_LABELS.get(interest, interest),
+            "investment_amount": investment_amount,
+            "matched_programs": matched_programs[:20],
+        }
+
+        return render(request, "subsidies/diagnosis_result.html", context)
+
+    return render(
+        request,
+        "subsidies/diagnosis_form.html",
+        {"interest_labels": INTEREST_LABELS},
+    )

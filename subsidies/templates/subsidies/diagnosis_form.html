@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>補助金・支援策診断</title>
+</head>
+<body>
+    <h1>補助金・支援策診断</h1>
+
+    <p>
+        いくつかの質問に答えるだけで、自社に合いそうな補助金や支援策の候補を確認できます。
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label>所在地</label><br>
+            <input type="text" name="area" placeholder="例：大阪府" required>
+        </p>
+
+        <p>
+            <label>業種</label><br>
+            <input type="text" name="industry" placeholder="例：製造業">
+        </p>
+
+        <p>
+            <label>従業員数</label><br>
+            <input type="number" name="employee_count" placeholder="例：20">
+        </p>
+
+        <p>
+            <label>法人・個人事業主の区分</label><br>
+            <select name="business_type">
+                <option value="company">法人</option>
+                <option value="sole_proprietor">個人事業主</option>
+                <option value="unknown">未定・わからない</option>
+            </select>
+        </p>
+
+        <p>
+            <label>現在検討している取り組み</label><br>
+            <select name="interest" required>
+                {% for value, label in interest_labels.items %}
+                    <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </p>
+
+        <p>
+            <label>投資予定額</label><br>
+            <input type="text" name="investment_amount" placeholder="例：100万円、未定など">
+        </p>
+
+        <button type="submit">診断する</button>
+    </form>
+</body>
+</html>
