@@ -1,34 +1,65 @@
+import time
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from datetime import datetime
 
-from subsidies.models import Subsidy
+from django.utils import timezone
+
+from subsidies.models import SubsidyProgram
 
 
 CHUSHO_KOBO_URL = "https://www.chusho.meti.go.jp/koukai/hojyokin/kobo.html"
 
 
+def fetch_html_with_retry(url, headers, retries=3, timeout=60, wait_seconds=5):
+    """
+    外部サイト取得用の共通処理。
+    タイムアウトや一時的な接続失敗に備えてリトライする。
+    """
+    last_error = None
+
+    for attempt in range(1, retries + 1):
+        try:
+            response = requests.get(url, headers=headers, timeout=timeout)
+            response.raise_for_status()
+            response.encoding = response.apparent_encoding
+            return response.text
+        except requests.exceptions.RequestException as e:
+            last_error = e
+            print(f"取得失敗 {attempt}/{retries}: {e}")
+            if attempt < retries:
+                time.sleep(wait_seconds)
+
+    raise last_error
+
+
 def fetch_chusho_subsidies():
     """
     中小企業庁の補助金公募情報ページから補助金情報を取得する。
-    まずはタイトル・URL・取得元を保存する最小構成。
+    現在の SubsidyProgram モデルに合わせた保存処理。
     """
 
     headers = {
-        "User-Agent": "subsidy-support-finder/0.1 (+https://your-website.example.com)"
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/120.0 Safari/537.36"
+        )
     }
 
-    response = requests.get(CHUSHO_KOBO_URL, headers=headers, timeout=20)
-    response.raise_for_status()
-    response.encoding = response.apparent_encoding
+    html = fetch_html_with_retry(
+        CHUSHO_KOBO_URL,
+        headers=headers,
+        retries=3,
+        timeout=60,
+        wait_seconds=5,
+    )
 
-    soup = BeautifulSoup(response.text, "lxml")
+    soup = BeautifulSoup(html, "lxml")
 
     created_count = 0
     updated_count = 0
 
-    # 中小企業庁ページ内のリンクを広めに取得
     links = soup.find_all("a")
 
     for link in links:
@@ -38,20 +69,25 @@ def fetch_chusho_subsidies():
         if not title or not href:
             continue
 
-        # 補助金・公募っぽいものだけ残す
         keywords = ["補助金", "公募", "助成", "支援", "交付"]
         if not any(keyword in title for keyword in keywords):
             continue
 
         source_url = urljoin(CHUSHO_KOBO_URL, href)
 
-        obj, created = Subsidy.objects.update_or_create(
+        obj, created = SubsidyProgram.objects.update_or_create(
             source_url=source_url,
             defaults={
                 "title": title[:255],
+                "provider": "中小企業庁",
+                "area": "全国",
                 "summary": title,
-                "organization": "中小企業庁",
+                "official_url": source_url,
                 "source_name": "中小企業庁",
+                "fetched_at": timezone.now(),
+                "raw_text": title,
+                "status": "unknown",
+                "is_active": True,
             },
         )
 
