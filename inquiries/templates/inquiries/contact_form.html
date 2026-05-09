@@ -1,0 +1,44 @@
+{% extends "subsidies/base.html" %}
+
+{% block title %}お問い合わせ{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>お問い合わせ・無料相談</h2>
+
+    <p>
+        補助金・支援策の詳細確認や、自社に合う制度の相談をご希望の方は、以下の内容を入力してください。
+    </p>
+
+    <div class="notice">
+        このフォームは現時点では送信機能の前段階です。<br>
+        次のステップで、入力内容の保存・メール送信に対応します。
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <p>
+            <label>会社名・屋号</label><br>
+            <input type="text" name="company_name" placeholder="例：株式会社〇〇">
+        </p>
+
+        <p>
+            <label>お名前</label><br>
+            <input type="text" name="name" placeholder="例：山田 太郎" required>
+        </p>
+
+        <p>
+            <label>メールアドレス</label><br>
+            <input type="email" name="email" placeholder="例：sample@example.com" required>
+        </p>
+
+        <p>
+            <label>相談内容</label><br>
+            <textarea name="message" rows="8" placeholder="補助金・支援策について相談したい内容を入力してください。"></textarea>
+        </p>
+
+        <button type="submit">相談内容を送信する</button>
+    </form>
+</div>
+{% endblock %}
